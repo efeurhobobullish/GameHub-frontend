@@ -20,3 +20,19 @@ export const features = [
   "Location-Based",
   "Verified Profiles"
 ];
+
+// constants/data.ts
+export const popularGames = [
+  "Call of Duty",
+  "PUBG Mobile",
+  "Free Fire",
+  "Valorant",
+  "Fortnite",
+  "Apex Legends",
+  "Mobile Legends",
+  "Genshin Impact",
+  "League of Legends",
+  "Overwatch 2",
+  "Rainbow Six Siege",
+  "CS:GO"
+];
