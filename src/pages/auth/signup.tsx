@@ -10,10 +10,8 @@ import {
   Check
 } from "lucide-react";
 import { Pattern, ButtonWithLoader, ModeToggle } from "@/components/ui";
-import { useThemeStore } from "@/store";
 
 export default function Signup() {
-  const { theme } = useThemeStore();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
@@ -23,8 +21,6 @@ export default function Signup() {
     password: "",
     confirmPassword: ""
   });
-
-  const logoPath = theme === "dark" ? "/logo-white.svg" : "/logo-black.svg";
 
   // Check for username in URL params (from Home page input)
   useEffect(() => {
