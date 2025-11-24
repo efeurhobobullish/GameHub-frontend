@@ -12,10 +12,8 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import api from "@/api/axios";
 import { Pattern, ButtonWithLoader, ModeToggle } from "@/components/ui";
-import { useThemeStore } from "@/store";
 
 export default function Home() {
-  const { theme } = useThemeStore();
   const [isLoading, setIsLoading] = useState(true);
   const [username, setUsername] = useState("");
 
