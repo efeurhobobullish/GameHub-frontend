@@ -1,12 +1,14 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, Mail, Lock, User, Github, Sparkles } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, User, Github, Sparkles, ArrowLeft } from "lucide-react";
 import { Pattern, ButtonWithLoader, ModeToggle } from "@/components/ui";
 import { useThemeStore } from "@/store";
 import { toast } from "sonner";
 
 export default function Signup() {
   const { theme } = useThemeStore();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -47,7 +49,7 @@ export default function Signup() {
       await new Promise(resolve => setTimeout(resolve, 2000));
       toast.success("Account created successfully!");
       // Redirect to dashboard or verification page
-      window.location.href = "/chat";
+      navigate("/chat");
     } catch (error) {
       toast.error("Failed to create account");
     } finally {
@@ -65,22 +67,32 @@ export default function Signup() {
 
   return (
     <Pattern>
-      <div className="min-h-screen flex flex-col">
+      <div className="relative z-10 min-h-[100dvh] flex flex-col overflow-x-hidden">
         {/* Header */}
-        <header className="w-full p-6 flex justify-between items-center">
+        <header className="w-full p-6 md:p-8 flex justify-between items-center max-w-7xl mx-auto z-20">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 flex items-center justify-center">
+            <div className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center">
               <img src={logoPath} alt="NeuralCore" className="w-full h-full object-contain" />
             </div>
-            <span className="text-lg font-semibold bg-gradient-to-r from-main to-main/70 bg-clip-text text-transparent">
+            <span className="text-xl font-bold bg-gradient-to-r from-main to-main/70 bg-clip-text text-transparent">
               NeuralCore
             </span>
           </div>
-          <ModeToggle />
+          
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => navigate("/")}
+              className="flex items-center gap-2 text-sm text-muted hover:text-main transition-colors"
+            >
+              <ArrowLeft size={16} />
+              Back to Home
+            </button>
+            <ModeToggle />
+          </div>
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 flex items-center justify-center p-6">
+        <main className="flex-1 flex items-center justify-center px-4 pb-12 w-full max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -246,12 +258,12 @@ export default function Signup() {
                 <div className="text-center mt-6">
                   <p className="text-muted text-sm">
                     Already have an account?{" "}
-                    <a
-                      href="/login"
+                    <Link
+                      to="/login"
                       className="text-main font-medium hover:underline transition-colors"
                     >
                       Sign in
-                    </a>
+                    </Link>
                   </p>
                 </div>
               </div>
