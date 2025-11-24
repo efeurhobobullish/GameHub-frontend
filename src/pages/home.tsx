@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import ModeToggle from "@/components/ui/mode-toggle";
+import ModeToggle from "@/components/ui/mode-toggle"; // Ensure this path is correct
 import { 
   Heart, ArrowRight, Sparkles, ShieldCheck, 
-  MessageCircle, Star, Smartphone, Menu, X, Check
+  MessageCircle, Star, Menu, X, Check, Users
 } from "lucide-react";
 
 export default function Home() {
@@ -38,36 +38,55 @@ export default function Home() {
             }
         `}>
           {/* Logo */}
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center">
+          <div className="flex items-center gap-2 cursor-pointer">
+            <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center shadow-lg shadow-primary/20">
               <Heart size={16} fill="currentColor" />
             </div>
             <span className="font-bold text-lg tracking-tight">SwiftMatch</span>
           </div>
 
-          {/* Desktop Links */}
+          {/* Desktop Links (No Download) */}
           <div className="hidden md:flex items-center gap-8">
             <a href="#features" className="text-sm font-medium hover:text-primary transition-colors">Features</a>
-            <a href="#premium" className="text-sm font-medium hover:text-primary transition-colors">Premium</a>
-            <a href="#download" className="text-sm font-medium hover:text-primary transition-colors">Download</a>
+            <a href="#how-it-works" className="text-sm font-medium hover:text-primary transition-colors">How it Works</a>
+            <a href="#stories" className="text-sm font-medium hover:text-primary transition-colors">Stories</a>
           </div>
 
-          {/* Actions */}
+          {/* Right Side Actions */}
           <div className="hidden md:flex items-center gap-3">
              <ModeToggle />
-             <a href="/login" className="px-5 py-2 text-sm font-medium hover:bg-secondary rounded-full transition-colors">Log in</a>
-             <a href="/signup" className="px-5 py-2 text-sm font-semibold bg-primary text-white rounded-full hover:shadow-lg hover:shadow-primary/20 transition-all">Join Free</a>
+             <div className="w-px h-6 bg-line/50 mx-1"></div>
+             <a href="/login" className="px-5 py-2 text-sm font-medium hover:bg-secondary rounded-full transition-colors">
+               Log in
+             </a>
+             <a href="/signup" className="px-5 py-2 text-sm font-semibold bg-primary text-white rounded-full hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95">
+               Join Now
+             </a>
           </div>
 
           {/* Mobile Toggle */}
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden p-2">
-            {isMenuOpen ? <X size={20}/> : <Menu size={20}/>}
-          </button>
+          <div className="flex items-center gap-4 md:hidden">
+            <ModeToggle />
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 text-main">
+              {isMenuOpen ? <X size={24}/> : <Menu size={24}/>}
+            </button>
+          </div>
         </nav>
       </div>
 
+      {/* Mobile Menu Dropdown */}
+      {isMenuOpen && (
+        <div className="fixed inset-0 z-40 bg-background pt-24 px-6 md:hidden animate-in slide-in-from-top-10">
+           <div className="flex flex-col gap-6 text-center">
+              <a href="#features" onClick={() => setIsMenuOpen(false)} className="text-xl font-medium">Features</a>
+              <a href="/login" className="btn border border-line h-12 rounded-xl">Log In</a>
+              <a href="/signup" className="btn btn-primary h-12 rounded-xl text-white">Create Account</a>
+           </div>
+        </div>
+      )}
+
       {/* --- Hero Section --- */}
-      <section className="pt-40 pb-20 md:pt-52 md:pb-32 text-center px-4">
+      <section className="pt-40 pb-20 md:pt-52 md:pb-32 text-center px-4 relative">
         <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           
           {/* Pill Badge */}
@@ -83,64 +102,54 @@ export default function Home() {
           </h1>
 
           <p className="text-lg md:text-xl text-muted/80 max-w-xl mx-auto leading-relaxed">
-            Experience a dating app designed for meaningful connections, not endless swiping. Curated matches for the modern era.
+            Experience a dating platform designed for meaningful connections, not endless swiping. Curated matches for the modern era.
           </p>
 
-          {/* Clean Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <button className="h-12 px-8 rounded-full bg-main text-background font-semibold hover:opacity-90 transition-all flex items-center gap-2">
-              Start Matching <ArrowRight size={16} />
-            </button>
-            <button className="h-12 px-8 rounded-full border border-line bg-background hover:bg-secondary/50 font-medium transition-all">
-              View Demo
-            </button>
+          {/* Clean Buttons - Linking to Signup */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
+            <a href="/signup" className="h-14 px-8 rounded-full bg-main text-background font-bold text-lg hover:opacity-90 transition-all flex items-center gap-2 shadow-xl hover:translate-y-[-2px]">
+              Start Matching <ArrowRight size={18} />
+            </a>
+            <a href="#features" className="h-14 px-8 rounded-full border border-line bg-background/50 hover:bg-secondary/50 font-medium transition-all flex items-center justify-center">
+              See Features
+            </a>
           </div>
         </div>
 
         {/* Abstract Hero Visual - Floating Cards */}
-        <div className="mt-20 relative h-[400px] w-full max-w-[1000px] mx-auto hidden md:block">
+        <div className="mt-24 relative h-[400px] w-full max-w-[1000px] mx-auto hidden md:block">
             {/* Left Card */}
-            <div className="absolute left-10 top-10 w-64 h-80 bg-white dark:bg-[#1a1a1a] rounded-3xl shadow-2xl shadow-primary/10 border border-line/40 -rotate-6 transform hover:-rotate-3 transition-all duration-500 p-4">
-                <div className="h-4/5 w-full bg-secondary/50 rounded-2xl mb-4 relative overflow-hidden">
-                    <div className="absolute inset-0 flex items-center justify-center text-muted/20">
-                        <Heart size={48} fill="currentColor"/>
-                    </div>
+            <div className="absolute left-20 top-10 w-64 h-80 bg-background rounded-3xl shadow-2xl shadow-primary/10 border border-line/60 -rotate-6 transform hover:-rotate-3 transition-all duration-500 p-4 z-10">
+                <div className="h-4/5 w-full bg-secondary/50 rounded-2xl mb-4 relative overflow-hidden center">
+                    <Heart size={48} className="text-primary/20" fill="currentColor"/>
                 </div>
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center px-2">
                     <div className="w-8 h-8 rounded-full bg-secondary"></div>
-                    <div className="h-2 w-20 bg-secondary rounded-full"></div>
+                    <div className="h-2 w-24 bg-secondary rounded-full"></div>
                 </div>
             </div>
 
             {/* Right Card */}
-            <div className="absolute right-10 top-20 w-64 h-80 bg-white dark:bg-[#1a1a1a] rounded-3xl shadow-2xl shadow-muted/10 border border-line/40 rotate-6 transform hover:rotate-3 transition-all duration-500 p-4 z-10">
-                 <div className="h-4/5 w-full bg-secondary/50 rounded-2xl mb-4 relative overflow-hidden">
-                    <div className="absolute inset-0 flex items-center justify-center text-muted/20">
-                        <Star size={48} fill="currentColor"/>
-                    </div>
+            <div className="absolute right-20 top-20 w-64 h-80 bg-background rounded-3xl shadow-2xl shadow-muted/10 border border-line/60 rotate-6 transform hover:rotate-3 transition-all duration-500 p-4 z-10">
+                 <div className="h-4/5 w-full bg-secondary/50 rounded-2xl mb-4 relative overflow-hidden center">
+                    <Star size={48} className="text-muted/20" fill="currentColor"/>
                 </div>
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center px-2">
                     <div className="w-8 h-8 rounded-full bg-secondary"></div>
-                    <div className="h-2 w-20 bg-secondary rounded-full"></div>
+                    <div className="h-2 w-24 bg-secondary rounded-full"></div>
                 </div>
             </div>
 
-            {/* Center Phone Mockup (CSS only) */}
-            <div className="absolute left-1/2 -translate-x-1/2 top-0 w-[280px] h-[550px] bg-background border-[8px] border-main/10 rounded-[3rem] shadow-2xl z-20 overflow-hidden">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-main/10 rounded-b-xl z-30" />
-                
-                {/* Screen Content */}
-                <div className="w-full h-full flex flex-col relative">
-                    {/* Chat Bubble Animation */}
-                    <div className="flex-1 p-6 flex flex-col justify-end space-y-4 pb-20">
-                         <div className="self-start bg-secondary p-3 rounded-2xl rounded-tl-none text-sm max-w-[80%] animate-in slide-in-from-left-4 fade-in duration-700">
-                            Hi! I noticed we both love hiking. 🏔️
-                         </div>
-                         <div className="self-end bg-primary text-white p-3 rounded-2xl rounded-tr-none text-sm max-w-[80%] shadow-lg shadow-primary/20 animate-in slide-in-from-right-4 fade-in duration-700 delay-300 fill-mode-forwards opacity-0" style={{animationDelay: '1s'}}>
-                            Yes! I was just at Yosemite last week.
-                         </div>
-                    </div>
-                </div>
+            {/* Center Visual (Chat) */}
+            <div className="absolute left-1/2 -translate-x-1/2 top-0 w-[300px] h-[360px] bg-background/80 backdrop-blur-md border border-white/20 dark:border-white/5 rounded-[2rem] shadow-2xl z-20 flex flex-col p-6">
+                 <div className="flex-1 flex flex-col justify-end space-y-4">
+                     <div className="self-start bg-secondary p-4 rounded-2xl rounded-tl-none text-sm animate-in slide-in-from-left-4 fade-in duration-700">
+                        Hi! I noticed we both love hiking. 🏔️
+                     </div>
+                     <div className="self-end bg-primary text-white p-4 rounded-2xl rounded-tr-none text-sm shadow-lg shadow-primary/20 animate-in slide-in-from-right-4 fade-in duration-700 delay-300 fill-mode-forwards opacity-0" style={{animationDelay: '0.5s'}}>
+                        Yes! I was just at Yosemite last week.
+                     </div>
+                 </div>
             </div>
         </div>
       </section>
@@ -156,7 +165,7 @@ export default function Home() {
                         <ShieldCheck />
                     </div>
                     <h3 className="text-2xl font-bold mb-3">Safety First, Always.</h3>
-                    <p className="text-muted">We use advanced AI to verify every single photo. If they don't look like their picture, they don't get on the app.</p>
+                    <p className="text-muted">We use advanced AI to verify every single photo. If they don't look like their picture, they don't get on the platform.</p>
                 </div>
                 <div className="mt-8 flex gap-4">
                     <div className="px-4 py-2 bg-background rounded-full text-xs font-bold border border-line/50 flex items-center gap-2">
@@ -206,7 +215,7 @@ export default function Home() {
           <div className="main flex flex-col md:flex-row justify-between items-center gap-12 text-center md:text-left">
               <h2 className="text-3xl font-bold max-w-xs">Trusted by the world's best daters.</h2>
               
-              <div className="flex gap-12 md:gap-24">
+              <div className="flex flex-wrap justify-center gap-12 md:gap-24">
                   <div>
                       <div className="text-4xl font-bold text-primary mb-1">2M+</div>
                       <div className="text-sm font-medium text-muted uppercase tracking-wider">Matches</div>
@@ -217,23 +226,23 @@ export default function Home() {
                   </div>
                   <div>
                       <div className="text-4xl font-bold text-primary mb-1">4.9</div>
-                      <div className="text-sm font-medium text-muted uppercase tracking-wider">App Rating</div>
+                      <div className="text-sm font-medium text-muted uppercase tracking-wider">Rating</div>
                   </div>
               </div>
           </div>
       </section>
 
-      {/* --- Clean Footer CTA --- */}
-      <section id="download" className="py-32 text-center px-4">
+      {/* --- Final CTA (Web Focus) --- */}
+      <section className="py-32 text-center px-4">
         <div className="max-w-3xl mx-auto space-y-8">
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Ready to meet your person?</h2>
             <p className="text-lg text-muted">Join the community of millions who have found meaningful connections on SwiftMatch.</p>
             
             <div className="flex items-center justify-center gap-4">
-                <button className="h-14 px-8 rounded-full bg-main text-background font-bold flex items-center gap-3 hover:scale-105 transition-transform">
-                    <Smartphone size={20} />
-                    Download App
-                </button>
+                <a href="/signup" className="h-14 px-10 rounded-full bg-main text-background font-bold flex items-center gap-3 hover:scale-105 transition-transform shadow-2xl">
+                    <Users size={20} />
+                    Create Free Account
+                </a>
             </div>
             
             <p className="text-xs text-muted/60 pt-8">
