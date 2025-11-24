@@ -2,14 +2,12 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Loader } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import api from "@/API/axios";
+import api from "@/api/axios";
 import { Pattern, ButtonWithLoader, ModeToggle } from "@/components/ui";
 import { libraries } from "@/constants/data";
 import {
   Brain,
   Zap,
-  MessageSquare,
-  Rocket,
   Github,
   Sparkles,
   Cpu,
