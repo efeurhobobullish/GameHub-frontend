@@ -11,7 +11,8 @@ import {
   Services, 
   Wallet, 
   Profile, 
-  Support 
+  Support,
+  Order
 } from "@/pages/main";
 
 export default function App() {
@@ -28,6 +29,7 @@ export default function App() {
 
         {/* Main App Routes (Matched to BottomNav) */}
         <Route path="/dashboard" element={<Dashboard />} />
+         <Route path="/order" element={<Order />} />
         <Route path="/transactions" element={<History />} />
         <Route path="/services" element={<Services />} />
         <Route path="/wallet" element={<Wallet />} />
