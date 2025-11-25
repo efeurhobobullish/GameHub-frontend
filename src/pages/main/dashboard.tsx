@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { 
   Bell, 
-  Plus,
   ChevronDown,
   Search,
   CheckCircle2,
@@ -10,18 +9,20 @@ import {
   Loader2,
   Copy,
   Clock,
-  History
+  History,
+  Zap
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import BottomNav from "@/layouts/BottomNav";
-import { ModeToggle, ButtonWithLoader } from "@/components/ui";
+import { ModeToggle, ButtonWithLoader, WalletCard } from "@/components/ui";
 
 import { ALL_COUNTRIES, ALL_SERVICES } from "@/constants/data";
 import type { Country, Service } from "@/constants/data";
 
 export default function Dashboard() {
-  const [balance, setBalance] = useState(12500.00);
+  // Local state for balance calculation (separate from WalletCard display for purchase logic)
+  const [localBalance, setLocalBalance] = useState(12500.00);
   const [totalNumbers, setTotalNumbers] = useState(42); 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,17 +48,10 @@ export default function Dashboard() {
       toast.error("You already have an active number. Finish that first.");
       return;
     }
-
-    if (balance < selectedService.price) {
-      toast.error("Insufficient balance. Please fund your wallet.");
-      return;
-    }
-
     setIsLoading(true);
-
     await new Promise(resolve => setTimeout(resolve, 1500));
 
-    setBalance(prev => prev - selectedService.price);
+    setLocalBalance(prev => prev - selectedService.price);
     setTotalNumbers(prev => prev + 1);
 
     const newOrder = {
@@ -67,7 +61,6 @@ export default function Dashboard() {
       number: `${selectedCountry.code} ${Math.floor(Math.random() * 800) + 100} ${Math.floor(Math.random() * 900000) + 100000}`,
       status: "waiting",
       smsCode: null,
-      expiry: Date.now() + 15 * 60 * 1000 
     };
 
     setActiveOrder(newOrder);
@@ -94,16 +87,14 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background text-main font-sans pb-32">
-      <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-md border-b border-line px-6 py-4">
+      {/* Header */}
+      <header className="sticky top-0 z-30 bg-background/90 backdrop-blur-md border-b border-line px-4 py-4">
         <div className="layout flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-secondary border border-line flex items-center justify-center text-main font-bold text-lg">
-              U
-            </div>
-            <div>
-              <p className="text-xs text-muted font-medium">Welcome,</p>
-              <h2 className="text-sm font-bold">User882</h2>
-            </div>
+          <div className="flex items-center gap-2">
+             <div className="w-8 h-8 bg-gradient-to-r from-violet-900 to-pink-400 rounded-lg flex items-center justify-center text-white">
+               <Zap size={18} fill="currentColor" />
+             </div>
+             <span className="font-jaro text-xl tracking-wide">SWIFT</span>
           </div>
           <div className="flex items-center gap-3">
             <ModeToggle />
@@ -116,40 +107,18 @@ export default function Dashboard() {
 
       <main className="layout pt-6 space-y-8">
 
-        {/* UPDATED: Balance Card matches Orange Theme */}
+        {/* NEW WALLET CARD */}
         <motion.div 
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="bg-gradient-to-br from-orange-500 to-orange-700 text-white rounded-[2rem] p-6 shadow-xl shadow-orange-500/20 relative overflow-hidden"
         >
-          {/* Decorative elements */}
-          <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
-
-          <div className="relative z-10">
-            <div className="flex justify-between items-start mb-8">
-              <div>
-                <p className="text-white/80 text-sm font-medium mb-1">Available Balance</p>
-                <h1 className="text-4xl font-bold tracking-tight flex items-start gap-1">
-                   <span className="text-2xl mt-1">₦</span>{balance.toLocaleString(undefined, {minimumFractionDigits: 2})}
-                </h1>
-              </div>
-              <button className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-xl text-sm font-bold backdrop-blur-sm transition-colors flex items-center gap-2 border border-white/10 shadow-lg">
-                <Plus size={16} /> Fund
-              </button>
-            </div>
-
-            <div className="flex items-center gap-2 text-white/90 text-xs font-mono bg-black/10 w-fit px-3 py-1.5 rounded-lg backdrop-blur-md border border-white/10">
-              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-              Wallet Active
-            </div>
-          </div>
+           <WalletCard />
         </motion.div>
 
-        {/* Total Stats */}
-        <div className="bg-card border border-line rounded-3xl p-5 shadow-sm flex items-center justify-between">
+        {/* Stats Row */}
+        <div className="bg-secondary/50 border border-line rounded-3xl p-5 flex items-center justify-between">
            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-secondary flex items-center justify-center text-main border border-line">
+              <div className="w-12 h-12 rounded-2xl bg-white dark:bg-black/20 flex items-center justify-center text-main border border-line shadow-sm">
                  <Smartphone size={22} />
               </div>
               <div>
@@ -157,10 +126,8 @@ export default function Dashboard() {
                  <h3 className="text-2xl font-bold text-main leading-tight">{totalNumbers}</h3>
               </div>
            </div>
-
-           <button className="group flex items-center gap-2 px-5 py-2.5 rounded-xl bg-secondary hover:bg-main hover:text-white transition-all text-sm font-bold text-main">
-             View All
-             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+           <button className="btn bg-white dark:bg-black/20 border border-line px-4 py-2 rounded-full text-xs hover:border-primary transition-colors">
+             History
            </button>
         </div>
 
@@ -173,47 +140,40 @@ export default function Dashboard() {
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden"
             >
-              <div className="bg-main text-background rounded-3xl p-6 shadow-2xl relative mb-8">
+              <div className="bg-secondary border border-line rounded-3xl p-6 relative mb-8">
                  <div className="flex justify-between items-start mb-6">
                     <div className="flex items-center gap-3">
-                       <div className="w-12 h-12 rounded-2xl bg-background/20 flex items-center justify-center">
-                          <activeOrder.service.icon size={24} className="text-background" />
+                       <div className="w-12 h-12 rounded-2xl bg-white dark:bg-black/20 flex items-center justify-center shadow-sm">
+                          <activeOrder.service.icon size={24} className={activeOrder.service.color} />
                        </div>
                        <div>
-                          <p className="text-background/70 text-xs font-medium uppercase tracking-wider">Active Number</p>
+                          <p className="text-muted text-xs font-medium uppercase tracking-wider">Active Number</p>
                           <p className="font-bold text-lg">{activeOrder.service.name}</p>
                        </div>
                     </div>
-                    <div className="bg-background/20 px-3 py-1 rounded-lg text-xs font-mono flex items-center gap-2">
+                    <div className="bg-white dark:bg-black/20 px-3 py-1 rounded-lg text-xs font-mono flex items-center gap-2 border border-line">
                        <Clock size={12} /> 14:32
                     </div>
                  </div>
 
-                 <div className="bg-background/10 rounded-2xl p-4 flex items-center justify-between mb-4 border border-background/10">
+                 <div className="bg-white dark:bg-black/20 rounded-2xl p-4 flex items-center justify-between mb-4 border border-line border-dashed">
                     <span className="text-2xl font-mono font-bold tracking-wider">{activeOrder.number}</span>
-                    <button 
-                      onClick={() => copyToClipboard(activeOrder.number)}
-                      className="p-2 hover:bg-background/20 rounded-lg transition-colors"
-                    >
-                      <Copy size={18} />
+                    <button onClick={() => copyToClipboard(activeOrder.number)}>
+                      <Copy size={18} className="text-muted hover:text-primary" />
                     </button>
                  </div>
 
-                 <div className="flex items-center justify-center min-h-[60px] bg-background text-main rounded-2xl p-4">
+                 <div className="flex items-center justify-center min-h-[60px]">
                     {activeOrder.status === "waiting" ? (
-                      <div className="flex items-center gap-3 animate-pulse">
-                         <Loader2 size={20} className="animate-spin text-main" />
+                      <div className="flex items-center gap-3 animate-pulse text-primary">
+                         <Loader2 size={20} className="animate-spin" />
                          <span className="font-bold text-sm">Waiting for SMS...</span>
                       </div>
                     ) : (
-                      <motion.div 
-                        initial={{ scale: 0.8 }}
-                        animate={{ scale: 1 }}
-                        className="text-center"
-                      >
+                      <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="text-center">
                          <p className="text-muted text-xs uppercase font-bold tracking-widest mb-1">Your Code</p>
                          <div className="flex items-center gap-4">
-                            <span className="text-3xl font-mono font-bold">{activeOrder.smsCode}</span>
+                            <span className="text-3xl font-mono font-bold text-primary">{activeOrder.smsCode}</span>
                             <button onClick={() => copyToClipboard(activeOrder.smsCode)}><Copy size={16} /></button>
                          </div>
                       </motion.div>
@@ -233,15 +193,15 @@ export default function Dashboard() {
             </span>
           </div>
 
-          <div className="bg-card border border-line rounded-3xl p-1 shadow-sm relative z-20">
+          <div className="bg-secondary/30 border border-line rounded-3xl p-1 relative z-20">
             {/* Country Selector */}
             <div className="relative">
                <button 
                   onClick={() => { setIsCountryOpen(!isCountryOpen); setIsServiceOpen(false); }}
-                  className="w-full flex items-center justify-between p-4 rounded-2xl hover:bg-secondary/50 transition-colors text-left"
+                  className="w-full flex items-center justify-between p-4 rounded-2xl hover:bg-secondary transition-colors text-left"
                >
                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center text-xl border border-line">
+                    <div className="w-10 h-10 rounded-xl bg-white dark:bg-black/20 flex items-center justify-center text-xl border border-line">
                       {selectedCountry.flag}
                     </div>
                     <div>
@@ -267,7 +227,7 @@ export default function Dashboard() {
                            placeholder="Search country..." 
                            value={countrySearch}
                            onChange={(e) => setCountrySearch(e.target.value)}
-                           className="w-full bg-secondary/50 rounded-lg py-3 pl-9 pr-3 text-xs border border-transparent focus:border-line transition-all placeholder:text-muted/70" 
+                           className="input w-full pl-9" 
                         />
                       </div>
                      <div className="py-2 space-y-1 max-h-[250px] overflow-y-auto custom-scrollbar">
@@ -275,13 +235,13 @@ export default function Dashboard() {
                           <button
                             key={country.id}
                             onClick={() => { setSelectedCountry(country); setIsCountryOpen(false); }}
-                            className={`w-full flex items-center justify-between p-3 rounded-xl text-sm transition-colors ${selectedCountry.id === country.id ? 'bg-secondary text-main font-bold' : 'text-muted hover:bg-secondary/30'}`}
+                            className={`w-full flex items-center justify-between p-3 rounded-xl text-sm transition-colors ${selectedCountry.id === country.id ? 'bg-white dark:bg-black/20 text-main font-bold shadow-sm' : 'text-muted hover:bg-secondary'}`}
                           >
                              <div className="flex items-center gap-3">
                                 <span className="text-lg">{country.flag}</span>
                                 <span>{country.name}</span>
                              </div>
-                             {selectedCountry.id === country.id && <CheckCircle2 size={16} className="text-main" />}
+                             {selectedCountry.id === country.id && <CheckCircle2 size={16} className="text-primary" />}
                           </button>
                         ))}
                      </div>
@@ -296,10 +256,10 @@ export default function Dashboard() {
             <div className="relative">
                <button 
                   onClick={() => { setIsServiceOpen(!isServiceOpen); setIsCountryOpen(false); }}
-                  className="w-full flex items-center justify-between p-4 rounded-2xl hover:bg-secondary/50 transition-colors text-left"
+                  className="w-full flex items-center justify-between p-4 rounded-2xl hover:bg-secondary transition-colors text-left"
                >
                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center border border-line">
+                    <div className="w-10 h-10 rounded-xl bg-white dark:bg-black/20 flex items-center justify-center border border-line">
                       <selectedService.icon size={20} className={selectedService.color} />
                     </div>
                     <div>
@@ -325,7 +285,7 @@ export default function Dashboard() {
                            placeholder="Search service..." 
                            value={serviceSearch}
                            onChange={(e) => setServiceSearch(e.target.value)}
-                           className="w-full bg-secondary/50 rounded-lg py-3 pl-9 pr-3 text-xs border border-transparent focus:border-line transition-all placeholder:text-muted/70" 
+                           className="input w-full pl-9" 
                         />
                       </div>
                      <div className="py-2 space-y-1 max-h-[250px] overflow-y-auto custom-scrollbar">
@@ -333,7 +293,7 @@ export default function Dashboard() {
                           <button
                             key={service.id}
                             onClick={() => { setSelectedService(service); setIsServiceOpen(false); }}
-                            className={`w-full flex items-center justify-between p-3 rounded-xl text-sm transition-colors ${selectedService.id === service.id ? 'bg-secondary text-main font-bold' : 'text-muted hover:bg-secondary/30'}`}
+                            className={`w-full flex items-center justify-between p-3 rounded-xl text-sm transition-colors ${selectedService.id === service.id ? 'bg-white dark:bg-black/20 text-main font-bold shadow-sm' : 'text-muted hover:bg-secondary'}`}
                           >
                              <div className="flex items-center gap-3">
                                 <service.icon size={16} className={service.color} />
@@ -349,17 +309,16 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-card border border-line rounded-3xl p-4 shadow-sm flex items-center justify-between">
+          <div className="bg-secondary/30 border border-line rounded-3xl p-4 flex items-center justify-between">
             <div>
                <p className="text-xs text-muted font-medium">Total Cost</p>
                <p className="text-2xl font-bold text-main">₦{selectedService.price.toFixed(2)}</p>
             </div>
-            {/* btn-primary now maps to orange in your index.css */}
             <ButtonWithLoader 
                loading={isLoading}
                initialText="Get Number"
                loadingText="Generating..."
-               className="btn-primary px-8 py-3 rounded-xl font-bold hover:shadow-lg"
+               className="btn-primary px-8 py-3 rounded-xl font-bold shadow-lg shadow-primary/20"
                onClick={handlePurchase}
             />
           </div>
@@ -368,21 +327,19 @@ export default function Dashboard() {
         {!activeOrder && (
           <div className="pb-4">
             <h3 className="font-bold text-lg mb-4">Recent Activity</h3>
-
-            <div className="border border-dashed border-line rounded-3xl p-10 flex flex-col items-center justify-center text-center bg-secondary/10">
+            <div className="border border-dashed border-line rounded-3xl p-10 flex flex-col items-center justify-center text-center bg-secondary/20">
               <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center mb-4">
                  <History size={32} className="text-muted/50" />
               </div>
               <h4 className="font-bold text-main">No activities yet</h4>
               <p className="text-sm text-muted max-w-[200px] mt-1">
-                Your purchased numbers and SMS codes will appear here.
+                Your purchased numbers will appear here.
               </p>
             </div>
           </div>
         )}
 
       </main>
-
       <BottomNav />
     </div>
   );
