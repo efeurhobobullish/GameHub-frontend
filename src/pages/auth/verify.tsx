@@ -1,124 +1,41 @@
-import { useState, useEffect } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
-import { Loader, Mail, CheckCircle } from "lucide-react";
-import { ButtonWithLoader } from "@/components/ui";
-import { useThemeStore } from "@/store";
+import { Link } from "react-router-dom";
+import { MailOpen, Zap } from "lucide-react";
+import { Pattern } from "@/components/ui";
 
 export default function Verify() {
-  const { theme } = useThemeStore();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isVerified, setIsVerified] = useState(false);
-  const [isResending, setIsResending] = useState(false);
-  const [searchParams] = useSearchParams();
-  const token = searchParams.get('token');
-
-  const logoPath = theme === "dark" ? "/logo-white.svg" : "/logo-colour.svg";
-
-  useEffect(() => {
-    if (token) {
-      verifyEmail();
-    }
-  }, [token]);
-
-  const verifyEmail = async () => {
-    setIsLoading(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      setIsVerified(true);
-      toast.success("Email verified successfully!");
-    } catch (error) {
-      toast.error("Verification failed. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const resendVerification = async () => {
-    setIsResending(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      toast.success("Verification email sent!");
-    } catch (error) {
-      toast.error("Failed to send verification email.");
-    } finally {
-      setIsResending(false);
-    }
-  };
-
-  if (token && isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background px-4">
-        <div className="text-center">
-          <Loader className="animate-spin mx-auto mb-4 text-orange-500" size={32} />
-          <p className="text-muted-foreground">Verifying your email...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8">
-      <div className="w-full max-w-md text-center">
-        {/* Header */}
-        <div className="flex justify-center mb-6">
-          <div className="w-16 h-16">
-            <img src={logoPath} alt="GameSquad" className="w-full h-full" />
-          </div>
-        </div>
+    <Pattern>
+      <div className="min-h-screen w-full flex flex-col relative z-10">
+        <header className="w-full p-6 flex justify-center items-center layout">
+          <Link to="/" className="flex items-center gap-2">
+             <div className="w-8 h-8 bg-gradient-to-r from-violet-900 to-pink-400 rounded-lg flex items-center justify-center text-white">
+               <Zap size={18} fill="currentColor" />
+             </div>
+             <span className="font-jaro text-xl tracking-wide text-main">SWIFT</span>
+          </Link>
+        </header>
 
-        {/* Content */}
-        <div className="bg-card border border-border rounded-2xl p-8 shadow-lg">
-          {isVerified ? (
-            <CheckCircle className="mx-auto mb-4 text-green-500" size={64} />
-          ) : (
-            <Mail className="mx-auto mb-4 text-orange-500" size={64} />
-          )}
-          
-          <h1 className="text-2xl font-bold mb-2">
-            {isVerified ? "Email Verified!" : "Verify Your Email"}
-          </h1>
-          
-          <p className="text-muted-foreground mb-6">
-            {isVerified 
-              ? "Your email has been successfully verified. You can now access all features."
-              : "We've sent a verification link to your email address."
-            }
-          </p>
-
-          {!isVerified && (
-            <>
-              <p className="text-sm text-muted-foreground mb-6">
-                Please check your inbox and click the verification link to activate your account.
+        <main className="flex-1 center px-4">
+          <div className="w-full max-w-md bg-secondary/50 border border-line p-8 rounded-[2rem] backdrop-blur-xl text-center space-y-6">
+            <div className="w-20 h-20 bg-background rounded-full flex items-center justify-center mx-auto shadow-sm border border-line text-primary">
+              <MailOpen size={32} />
+            </div>
+            
+            <div className="space-y-2">
+              <h1 className="text-2xl font-bold font-jaro text-main">Check your email</h1>
+              <p className="text-muted text-sm leading-relaxed">
+                We sent a verification link to your email address. Please click the link to activate your account.
               </p>
-              
-              <div className="space-y-3">
-                <ButtonWithLoader
-                  loading={isResending}
-                  initialText="Resend Verification Email"
-                  loadingText="Sending..."
-                  onClick={resendVerification}
-                  className="w-full py-3 border border-border text-foreground rounded-lg font-medium hover:bg-accent transition-colors"
-                />
-                
-                <Link to="/auth/login" className="block">
-                  <button className="w-full py-3 text-muted-foreground hover:text-foreground rounded-lg font-medium transition-colors">
-                    Back to Login
-                  </button>
-                </Link>
-              </div>
-            </>
-          )}
-          
-          {isVerified && (
-            <Link to="/auth/login" className="block">
-              <button className="w-full py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-lg font-medium transition-all hover:shadow-lg">
-                Continue to Login
-              </button>
-            </Link>
-          )}
-        </div>
+            </div>
+
+            <div className="pt-4">
+              <Link to="/login" className="btn-primary px-6 py-3 rounded-xl text-sm w-full inline-block">
+                Back to Login
+              </Link>
+            </div>
+          </div>
+        </main>
       </div>
-    </div>
+    </Pattern>
   );
 }
