@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { 
-  Search, Copy, CheckCircle2, XCircle, Clock, MessageSquare, Filter 
+  Search, Copy, Clock, Filter 
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -16,8 +15,7 @@ const HISTORY_DATA = [
 ];
 
 export default function History() {
-  const [filter, setFilter] = useState("all");
-
+  
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast.success("Copied to clipboard");
