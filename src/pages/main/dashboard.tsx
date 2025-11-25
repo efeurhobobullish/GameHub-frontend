@@ -17,8 +17,9 @@ import { toast } from "sonner";
 import BottomNav from "@/layouts/BottomNav";
 import { ModeToggle, ButtonWithLoader } from "@/components/ui";
 
-// Import data and Types
-import { ALL_COUNTRIES, ALL_SERVICES, Country, Service } from "@/constants/data";
+// FIXED IMPORTS: Importing types separately using 'import type'
+import { ALL_COUNTRIES, ALL_SERVICES } from "@/constants/data";
+import type { Country, Service } from "@/constants/data";
 
 export default function Dashboard() {
   const [balance, setBalance] = useState(12500.00);
