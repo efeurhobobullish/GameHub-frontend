@@ -4,10 +4,10 @@ import CountUp from "react-countup";
 import { 
   Loader, 
   MessageCircle, 
-  Share2, 
-  Heart, 
-  Sparkles,
-  Ghost
+  Smartphone, // Changed from Share2
+  ShieldCheck, // Changed from Heart
+  Globe, // Changed from Sparkles
+  Phone // Changed from Ghost
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import api from "@/api/axios";
@@ -15,8 +15,7 @@ import { Pattern, ButtonWithLoader, ModeToggle } from "@/components/ui";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
-  const [username, setUsername] = useState("");
-
+  const [searchQuery, setSearchQuery] = useState(""); // Changed from username
 
   useEffect(() => {
     // Simulate connection check
@@ -34,36 +33,36 @@ export default function Home() {
     checkServices();
   }, []);
 
-  const handleGetLink = () => {
-    if (!username) {
-      toast.error("Please enter a username first");
+  const handleSearch = () => {
+    if (!searchQuery) {
+      toast.error("Please enter a service name first");
       return;
     }
-    toast.success(`Link created for @${username}!`);
-    // Navigate to signup or dashboard logic here
-    window.location.href = "/signup?user=" + username;
+    toast.success(`Searching numbers for ${searchQuery}...`);
+    // Navigate to dashboard/search logic here
+    window.location.href = "/dashboard?service=" + searchQuery;
   };
 
   const steps = [
     {
-      icon: Ghost,
-      title: "1. Create Account",
-      desc: "Claim your unique anonymous link in seconds.",
-    },
-    {
-      icon: Share2,
-      title: "2. Share Link",
-      desc: "Post it on your Instagram Story, Snapchat, or Twitter.",
+      icon: Globe,
+      title: "1. Select Country",
+      desc: "Choose from over 150+ countries worldwide.",
     },
     {
       icon: MessageCircle,
-      title: "3. Get Truths",
-      desc: "Receive honest, anonymous messages from your friends.",
+      title: "2. Choose Service",
+      desc: "Select WhatsApp, Telegram, PayPal, or others.",
     },
     {
-      icon: Sparkles,
-      title: "4. Reply",
-      desc: "Share the best responses back to your story.",
+      icon: Smartphone,
+      title: "3. Get Number",
+      desc: "Receive a temporary virtual number instantly.",
+    },
+    {
+      icon: ShieldCheck,
+      title: "4. Verify",
+      desc: "Receive the SMS code and verify your account.",
     },
   ];
 
@@ -74,10 +73,10 @@ export default function Home() {
         <header className="w-full p-6 md:p-8 flex justify-between items-center max-w-7xl mx-auto z-20">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-main text-background rounded-xl">
-               <Ghost className="w-6 h-6 md:w-7 md:h-7" />
+               <Phone className="w-6 h-6 md:w-7 md:h-7" />
             </div>
             <span className="text-xl font-bold tracking-tight text-main">
-              Anonymous
+              VirtuNum
             </span>
           </div>
           <div className="flex items-center gap-4">
@@ -114,7 +113,7 @@ export default function Home() {
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                     </span>
                     <span>
-                      <CountUp end={50000} separator="," duration={2.5} />+ messages sent today
+                      <CountUp end={8500} separator="," duration={2.5} />+ numbers online now
                     </span>
                   </motion.div>
 
@@ -124,9 +123,9 @@ export default function Home() {
                     transition={{ delay: 0.7 }}
                     className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-main leading-[0.9]"
                   >
-                    Send me <br/>
-                    <span className="text-muted">Anonymous</span> <br/>
-                    Messages!
+                    Get Virtual <br/>
+                    <span className="text-muted">SMS Numbers</span> <br/>
+                    Instantly!
                   </motion.h1>
 
                   <motion.p
@@ -135,12 +134,12 @@ export default function Home() {
                     transition={{ delay: 0.9 }}
                     className="text-muted text-lg md:text-xl max-w-xl mx-auto leading-relaxed"
                   >
-                    Share your unique link and see what your friends 
-                    <span className="text-main font-semibold italic"> really</span> think. 
-                    No names attached.
+                    Bypass OTP verifications for WhatsApp, Telegram, and PayPal.
+                    <span className="text-main font-semibold italic"> Securely</span> and privately. 
+                    No SIM card needed.
                   </motion.p>
                   
-                  {/* Interactive Username Input */}
+                  {/* Interactive Search Input */}
                   <motion.div
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
@@ -149,21 +148,21 @@ export default function Home() {
                   >
                     <div className="relative w-full">
                       <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-muted font-medium">
-                        anonymous.com/
+                        Service:
                       </div>
                       <input 
                         type="text" 
-                        placeholder="username" 
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        className="w-full h-14 pl-[140px] pr-4 rounded-2xl bg-background border-2 border-line focus:border-main focus:ring-0 text-lg font-medium placeholder:text-muted/50 transition-all"
+                        placeholder="WhatsApp, Telegram..." 
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full h-14 pl-[90px] pr-4 rounded-2xl bg-background border-2 border-line focus:border-main focus:ring-0 text-lg font-medium placeholder:text-muted/50 transition-all"
                       />
                     </div>
                     <ButtonWithLoader
                       loading={false}
-                      initialText="Get Link"
+                      initialText="Get Number"
                       loadingText=""
-                      onClick={handleGetLink}
+                      onClick={handleSearch}
                       className="h-14 px-8 rounded-2xl text-lg font-bold bg-main text-background hover:bg-main/90 transition-all w-full sm:w-auto min-w-[140px] shadow-xl hover:translate-y-[-2px] hover:shadow-2xl"
                     />
                   </motion.div>
@@ -177,46 +176,46 @@ export default function Home() {
                   className="relative"
                 >
                    {/* Decorative elements behind */}
-                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-r from-purple-500/5 via-transparent to-orange-500/5 blur-3xl rounded-full -z-10" />
+                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-r from-blue-500/5 via-transparent to-green-500/5 blur-3xl rounded-full -z-10" />
 
                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto px-4">
                       {/* Fake Message Card 1 */}
                       <div className="p-6 rounded-3xl bg-background border border-line text-left shadow-sm rotate-[-3deg] hover:rotate-0 transition-transform duration-300">
                         <div className="flex justify-between items-start mb-4">
-                          <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-500">
-                            <Heart size={20} fill="currentColor" />
+                          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-500">
+                            <MessageCircle size={20} fill="currentColor" />
                           </div>
                           <span className="text-xs text-muted font-mono">
-                             <CountUp end={12} duration={2} />m ago
+                             <CountUp end={5} duration={2} />s ago
                           </span>
                         </div>
-                        <p className="text-lg font-medium text-main">"I've always had a crush on you... just too shy to say it 🙈"</p>
+                        <p className="text-lg font-medium text-main">"PayPal: Your security code is 882-991. Do not share this code."</p>
                       </div>
 
                       {/* Fake Message Card 2 */}
                       <div className="p-6 rounded-3xl bg-main text-background border border-main text-left shadow-xl scale-105 z-10">
                         <div className="flex justify-between items-start mb-4">
                           <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white">
-                            <Ghost size={20} />
+                            <ShieldCheck size={20} />
                           </div>
                           <span className="text-xs text-white/60 font-mono">
-                            <CountUp end={2} duration={4} />m ago
+                            <CountUp end={2} duration={4} />s ago
                           </span>
                         </div>
-                        <p className="text-lg font-medium">"Where did you get that hoodie you wore today? It looked fire!"</p>
+                        <p className="text-lg font-medium">"WhatsApp code: 442-123. You can also tap on this link to verify."</p>
                       </div>
 
                       {/* Fake Message Card 3 */}
                       <div className="p-6 rounded-3xl bg-background border border-line text-left shadow-sm rotate-[3deg] hover:rotate-0 transition-transform duration-300">
                          <div className="flex justify-between items-start mb-4">
-                          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-500">
-                            <MessageCircle size={20} />
+                          <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-500">
+                            <Phone size={20} />
                           </div>
                           <span className="text-xs text-muted font-mono">
-                            <CountUp end={1} duration={3} />h ago
+                            <CountUp end={12} duration={3} />s ago
                           </span>
                         </div>
-                        <p className="text-lg font-medium text-main">"Are you going to the party this weekend?"</p>
+                        <p className="text-lg font-medium text-main">"Uber: Your verification code is 1124. Welcome to Uber!"</p>
                       </div>
                    </div>
                 </motion.div>
