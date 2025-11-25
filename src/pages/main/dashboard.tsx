@@ -6,12 +6,11 @@ import {
   Smartphone,
   Loader2,
   Copy,
-  Clock,
-  History,
+  Clock
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import Header from "@/layouts/Header"; // Import the Header component
+import Header from "@/layouts/Header";
 import BottomNav from "@/layouts/BottomNav";
 import { ButtonWithLoader, WalletCard } from "@/components/ui";
 
@@ -100,7 +99,6 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background text-main font-sans pb-32">
-      {/* Use the imported Header component */}
       <Header />
 
       <main className="main pt-6 space-y-8">
@@ -367,22 +365,6 @@ export default function Dashboard() {
             />
           </div>
         </div>
-
-        {/* Recent Activity */}
-        {!activeOrder && (
-          <div className="pb-4">
-            <h3 className="font-bold text-lg mb-4">Recent Activity</h3>
-            <div className="border border-dashed border-line rounded-3xl p-10 flex flex-col items-center justify-center text-center bg-secondary/20">
-              <div className="w-16 h-16 rounded-full bg-secondary center mb-4">
-                <History size={32} className="text-muted/50" />
-              </div>
-              <h4 className="font-bold text-main">No activities yet</h4>
-              <p className="text-sm text-muted max-w-[200px] mt-1">
-                Your purchased numbers will appear here.
-              </p>
-            </div>
-          </div>
-        )}
       </main>
 
       <BottomNav />
