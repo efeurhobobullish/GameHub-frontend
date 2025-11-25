@@ -4,10 +4,11 @@ import CountUp from "react-countup";
 import { 
   Loader, 
   MessageCircle, 
-  Smartphone, // Changed from Share2
-  ShieldCheck, // Changed from Heart
-  Globe, // Changed from Sparkles
-  Phone // Changed from Ghost
+  Smartphone, 
+  ShieldCheck, 
+  Globe, 
+  Phone,
+  ArrowRight
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import api from "@/api/axios";
@@ -15,7 +16,7 @@ import { Pattern, ButtonWithLoader, ModeToggle } from "@/components/ui";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState(""); // Changed from username
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     // Simulate connection check
@@ -24,7 +25,6 @@ export default function Home() {
       try {
         await api.get("/");
       } catch (error) {
-        // Silent fail or simple log for dev
         console.log("API check finished");
       } finally {
         setIsLoading(false);
@@ -39,31 +39,15 @@ export default function Home() {
       return;
     }
     toast.success(`Searching numbers for ${searchQuery}...`);
-    // Navigate to dashboard/search logic here
     window.location.href = "/dashboard?service=" + searchQuery;
   };
 
+  // Simplified steps content
   const steps = [
-    {
-      icon: Globe,
-      title: "1. Select Country",
-      desc: "Choose from over 150+ countries worldwide.",
-    },
-    {
-      icon: MessageCircle,
-      title: "2. Choose Service",
-      desc: "Select WhatsApp, Telegram, PayPal, or others.",
-    },
-    {
-      icon: Smartphone,
-      title: "3. Get Number",
-      desc: "Receive a temporary virtual number instantly.",
-    },
-    {
-      icon: ShieldCheck,
-      title: "4. Verify",
-      desc: "Receive the SMS code and verify your account.",
-    },
+    { icon: Globe, title: "Select Country", desc: "150+ Regions" },
+    { icon: MessageCircle, title: "Choose App", desc: "WhatsApp, etc" },
+    { icon: Smartphone, title: "Get Number", desc: "Instant Access" },
+    { icon: ShieldCheck, title: "Receive Code", desc: "SMS Verify" },
   ];
 
   return (
@@ -136,7 +120,6 @@ export default function Home() {
                   >
                     Bypass OTP verifications for WhatsApp, Telegram, and PayPal.
                     <span className="text-main font-semibold italic"> Securely</span> and privately. 
-                    No SIM card needed.
                   </motion.p>
                   
                   {/* Interactive Search Input */}
@@ -175,7 +158,6 @@ export default function Home() {
                   transition={{ delay: 1.3 }}
                   className="relative"
                 >
-                   {/* Decorative elements behind */}
                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-r from-blue-500/5 via-transparent to-green-500/5 blur-3xl rounded-full -z-10" />
 
                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto px-4">
@@ -189,7 +171,7 @@ export default function Home() {
                              <CountUp end={5} duration={2} />s ago
                           </span>
                         </div>
-                        <p className="text-lg font-medium text-main">"PayPal: Your security code is 882-991. Do not share this code."</p>
+                        <p className="text-lg font-medium text-main">"PayPal: Your security code is 882-991."</p>
                       </div>
 
                       {/* Fake Message Card 2 */}
@@ -202,7 +184,7 @@ export default function Home() {
                             <CountUp end={2} duration={4} />s ago
                           </span>
                         </div>
-                        <p className="text-lg font-medium">"WhatsApp code: 442-123. You can also tap on this link to verify."</p>
+                        <p className="text-lg font-medium">"WhatsApp code: 442-123. Verification complete."</p>
                       </div>
 
                       {/* Fake Message Card 3 */}
@@ -215,34 +197,50 @@ export default function Home() {
                             <CountUp end={12} duration={3} />s ago
                           </span>
                         </div>
-                        <p className="text-lg font-medium text-main">"Uber: Your verification code is 1124. Welcome to Uber!"</p>
+                        <p className="text-lg font-medium text-main">"Uber: Your verification code is 1124."</p>
                       </div>
                    </div>
                 </motion.div>
 
-                {/* How it Works */}
+                {/* REDESIGNED: How it Works (Compact Shape Panel) */}
                 <motion.div
                   initial={{ y: 40, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 1.5 }}
-                  className="pt-16 w-full max-w-6xl mx-auto"
+                  className="pt-12 w-full max-w-4xl mx-auto px-4"
                 >
-                  <p className="text-muted text-sm uppercase tracking-widest mb-10 font-bold">
+                  <p className="text-muted text-xs uppercase tracking-[0.2em] mb-8 font-bold">
                     How it works
                   </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {steps.map((step, idx) => (
-                      <div
-                        key={idx}
-                        className="flex flex-col items-center p-6 rounded-2xl border border-transparent hover:border-line hover:bg-secondary/30 transition-all duration-300"
-                      >
-                        <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center mb-6 text-main">
-                          <step.icon size={32} strokeWidth={1.5} />
+                  
+                  {/* The Shape Container */}
+                  <div className="bg-background border border-line rounded-[2.5rem] shadow-sm overflow-hidden">
+                    <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-line">
+                      {steps.map((step, idx) => (
+                        <div
+                          key={idx}
+                          className="flex-1 p-6 sm:p-8 flex flex-col items-center justify-center hover:bg-secondary/20 transition-colors group relative"
+                        >
+                          <div className="absolute top-4 right-4 text-[10px] font-bold text-line group-hover:text-muted transition-colors">
+                            0{idx + 1}
+                          </div>
+                          
+                          <div className="w-12 h-12 rounded-2xl bg-secondary/50 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-main group-hover:text-background transition-all duration-300">
+                            <step.icon size={22} strokeWidth={2} />
+                          </div>
+                          
+                          <h3 className="font-bold text-lg text-main mb-1">{step.title}</h3>
+                          <p className="text-muted text-xs font-medium uppercase tracking-wide">{step.desc}</p>
+
+                          {/* Arrow connector for desktop (except last item) */}
+                          {idx !== steps.length - 1 && (
+                            <div className="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-line bg-background rounded-full p-1">
+                              <ArrowRight size={14} />
+                            </div>
+                          )}
                         </div>
-                        <h3 className="font-bold text-xl mb-2 text-main">{step.title}</h3>
-                        <p className="text-muted text-sm leading-relaxed max-w-[200px]">{step.desc}</p>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </motion.div>
               </motion.div>
