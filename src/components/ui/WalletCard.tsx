@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Gift, Wallet, Zap } from "lucide-react";
-import { useAuth } from "@/Hooks";
+import { useAuth } from "@/hooks";
 import CountUp from "react-countup";
 
 const WalletCard = () => {
