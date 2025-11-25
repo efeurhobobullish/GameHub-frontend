@@ -13,15 +13,15 @@ interface LoginProps {
   onToggleMode: () => void;
 }
 
-export default function Login({ onToggleMode }: LoginProps): JSX.Element {
+export default function Login({ onToggleMode }: LoginProps) {
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
   });
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -29,7 +29,7 @@ export default function Login({ onToggleMode }: LoginProps): JSX.Element {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -49,12 +49,7 @@ export default function Login({ onToggleMode }: LoginProps): JSX.Element {
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Here you would typically make an API call to your backend
-      // await api.post("/auth/login", formData);
-      
       toast.success("Login successful! Redirecting...");
-      // Redirect to dashboard or home page
       window.location.href = "/dashboard";
     } catch (error) {
       toast.error("Login failed. Please check your credentials.");
@@ -111,7 +106,6 @@ export default function Login({ onToggleMode }: LoginProps): JSX.Element {
               <button
                 type="button"
                 className="text-sm text-muted hover:text-main transition-colors"
-                onClick={() => {/* Add forgot password logic */}}
               >
                 Forgot password?
               </button>
