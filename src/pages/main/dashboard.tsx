@@ -101,16 +101,18 @@ export default function Dashboard() {
     <div className="min-h-screen bg-background text-main font-sans pb-32">
       <Header />
 
-      <main className="main pt-6 space-y-8">
-        {/* Wallet Card */}
+      {/* Reduced padding to account for header height more precisely */}
+      <main className="main pt-20 space-y-6">
+        {/* Wallet Card with margin top */}
         <motion.div 
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
+          className="mt-4"
         >
           <WalletCard />
         </motion.div>
 
-        {/* Stats Section */}
+        {/* Rest of your content remains the same */}
         <div className="bg-card border border-line rounded-3xl p-5 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-card border border-line shadow-sm center">
