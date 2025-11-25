@@ -19,7 +19,7 @@ import BottomNav from "@/layouts/BottomNav";
 import { ModeToggle, ButtonWithLoader } from "@/components/ui";
 
 // Import your data
-import { ALL_COUNTRIES, ALL_SERVICES } from "@/constant/data";
+import { ALL_COUNTRIES, ALL_SERVICES } from "@/constants/data";
 
 export default function Dashboard() {
   const [balance, setBalance] = useState(12500.00);
