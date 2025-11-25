@@ -1,185 +1,122 @@
-import { useState, useEffect } from "react";
-import type { ChangeEvent, FormEvent } from "react";
-import { toast } from "sonner";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { 
-  Ghost, 
-  User, 
-  Lock, 
-  Eye, 
-  EyeOff
-} from "lucide-react";
-import { Pattern, ButtonWithLoader, ModeToggle } from "@/components/ui";
+import { toast } from "sonner";
+import { Eye, EyeOff, Mail, Lock, Zap } from "lucide-react";
+import { ButtonWithLoader, ModeToggle, Pattern } from "@/components/ui";
 
 export default function Login() {
-  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   
-  // Form State
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: ""
   });
 
-  // Check for username in URL params (from Home page input)
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const userParam = params.get("user");
-    if (userParam) {
-      setFormData(prev => ({ ...prev, username: userParam }));
-    }
-  }, []);
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Basic Validation
-    if (!formData.username || !formData.password) {
-      toast.error("Please fill in all fields");
+    if (!formData.email || !formData.password) {
+      toast.error("Please enter your credentials");
       return;
     }
 
     setIsLoading(true);
-
-    // Simulate API Call
-    try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      toast.success("Login successful!");
-      // window.location.href = "/dashboard"; // Redirect logic
-    } catch (error) {
-      toast.error("Invalid credentials. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    setIsLoading(false);
+    toast.success("Welcome back!");
+    navigate("/dashboard");
   };
 
   return (
     <Pattern>
-      <div className="relative z-10 min-h-[100dvh] flex flex-col font-sans text-main">
-        
-        {/* Header */}
-        <header className="w-full p-6 flex justify-between items-center max-w-7xl mx-auto z-20">
-          <div 
-            className="flex items-center gap-3 cursor-pointer" 
-            onClick={() => window.location.href = "/"}
-          >
-            <div className="w-10 h-10 flex items-center justify-center bg-main text-background rounded-xl">
-               <Ghost className="w-6 h-6" />
-            </div>
-            <span className="text-xl font-bold tracking-tight text-main hidden sm:block">
-              Anonymous
-            </span>
-          </div>
+      <div className="min-h-screen w-full flex flex-col relative z-10">
+        {/* Minimal Header */}
+        <header className="w-full p-6 flex justify-between items-center layout">
+          <Link to="/" className="flex items-center gap-2">
+             <div className="w-8 h-8 bg-gradient-to-r from-violet-900 to-pink-400 rounded-lg flex items-center justify-center text-white">
+               <Zap size={18} fill="currentColor" />
+             </div>
+             <span className="font-jaro text-xl tracking-wide text-main">SWIFT</span>
+          </Link>
           <ModeToggle />
         </header>
 
-        {/* Main Content */}
-        <main className="flex-1 flex items-center justify-center px-4 py-12">
+        <main className="flex-1 center px-4 pb-12">
           <motion.div 
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.4 }}
-            className="w-full max-w-md"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full max-w-md bg-secondary/50 border border-line p-8 rounded-[2rem] backdrop-blur-xl shadow-xl"
           >
-            {/* Card */}
-            <div className="bg-background/80 backdrop-blur-xl border border-line p-8 rounded-3xl shadow-2xl relative overflow-hidden">
-              
-              {/* Decorative Gradient Blob */}
-              <div className="absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br from-purple-500/20 to-orange-500/20 blur-3xl rounded-full pointer-events-none" />
-
-              <div className="text-center mb-8 relative z-10">
-                <h1 className="text-3xl font-bold mb-2 text-main tracking-tight">Welcome back</h1>
-                <p className="text-muted text-sm">
-                  Sign in to your account to continue receiving messages.
-                </p>
-              </div>
-
-              <form onSubmit={handleLogin} className="space-y-5 relative z-10">
-                {/* Username Input */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted ml-1">Username</label>
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted group-focus-within:text-main transition-colors">
-                      <User size={18} />
-                    </div>
-                    <input
-                      type="text"
-                      name="username"
-                      value={formData.username}
-                      onChange={handleChange}
-                      placeholder="yourname"
-                      className="w-full h-12 pl-11 pr-4 rounded-xl bg-secondary/30 border border-line focus:border-main focus:bg-background focus:ring-0 text-main placeholder:text-muted/50 transition-all outline-none"
-                    />
-                  </div>
-                </div>
-
-                {/* Password Input */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted ml-1">Password</label>
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted group-focus-within:text-main transition-colors">
-                      <Lock size={18} />
-                    </div>
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      placeholder="••••••••"
-                      className="w-full h-12 pl-11 pr-12 rounded-xl bg-secondary/30 border border-line focus:border-main focus:bg-background focus:ring-0 text-main placeholder:text-muted/50 transition-all outline-none"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted hover:text-main transition-colors cursor-pointer"
-                    >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Forgot Password Link */}
-                <div className="text-right">
-                  <a 
-                    href="/forgot-password" 
-                    className="text-xs text-muted hover:text-main font-medium transition-colors cursor-pointer"
-                  >
-                    Forgot password?
-                  </a>
-                </div>
-
-                {/* Submit Button */}
-                <div className="pt-4">
-                  <ButtonWithLoader
-                    loading={isLoading}
-                    initialText="Sign In"
-                    loadingText="Signing in..."
-                    type="submit"
-                    className="w-full h-12 rounded-xl font-bold text-lg bg-main text-background hover:bg-main/90 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-                  />
-                </div>
-              </form>
-
-              {/* Footer Links */}
-              <div className="mt-8 text-center text-sm text-muted">
-                <p>
-                  Don't have an account?{" "}
-                  <a href="/signup" className="text-main font-semibold hover:underline decoration-2 underline-offset-4 cursor-pointer">
-                    Create account
-                  </a>
-                </p>
-              </div>
-
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold font-jaro mb-2 text-main">Welcome Back</h1>
+              <p className="text-sm text-muted">Continue to your dashboard</p>
             </div>
-            
-            {/* Terms */}
-            <p className="text-center text-xs text-muted/60 mt-6 max-w-xs mx-auto">
-              By signing in, you agree to our Terms of Service and Privacy Policy.
-            </p>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Email Input */}
+              <div className="relative">
+                <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
+                <input 
+                  type="email" 
+                  placeholder="Email Address"
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  className="input w-full pl-11 bg-background"
+                />
+              </div>
+
+              {/* Password Input */}
+              <div className="space-y-2">
+                <div className="relative">
+                  <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
+                  <input 
+                    type={showPassword ? "text" : "password"} 
+                    placeholder="Password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({...formData, password: e.target.value})}
+                    className="input w-full pl-11 pr-11 bg-background"
+                  />
+                  <button 
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-main transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+                <div className="flex justify-end">
+                  <Link to="/forgot-password" className="text-xs text-muted hover:text-primary transition-colors">
+                    Forgot Password?
+                  </Link>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <ButtonWithLoader 
+                  loading={isLoading}
+                  initialText="Log In"
+                  loadingText="Signing In..."
+                  className="btn-primary w-full h-12 rounded-xl text-sm uppercase tracking-wider hover:shadow-lg hover:shadow-violet-500/20 transition-all"
+                />
+              </div>
+            </form>
+
+            <div className="mt-8 text-center space-y-4">
+              <div className="h-[1px] bg-line w-full" />
+              
+              <div className="text-sm text-muted">
+                Don't have an account?{" "}
+                <Link to="/signup" className="text-primary font-bold hover:underline ml-1">
+                  Sign Up
+                </Link>
+              </div>
+            </div>
           </motion.div>
         </main>
       </div>
