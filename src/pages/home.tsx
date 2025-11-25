@@ -1,387 +1,207 @@
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import CountUp from "react-countup";
+import React, { useState } from 'react';
 import { 
-  Loader, 
-  Phone, 
-  Shield, 
+  Zap, 
+  ShieldCheck, 
   Globe, 
-  Zap,
-  CheckCircle,
-  MessageCircle,
-  Smartphone,
-  CreditCard,
-  ArrowRight
-} from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
-import api from "@/api/axios";
-import { Pattern, ButtonWithLoader, ModeToggle } from "@/components/ui";
+  Menu, 
+  X, 
+  ArrowRight,
+  Check,
+  MessageSquare
+} from 'lucide-react';
 
-// Define types for our data
-interface Feature {
-  icon: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>;
-  title: string;
-  desc: string;
-}
+/* --- UI Components --- */
 
-interface Step {
-  icon: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>;
-  title: string;
-  desc: string;
-}
-
-interface FAQ {
-  question: string;
-  answer: string;
-}
-
-export default function Home() {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const checkServices = async () => {
-      setIsLoading(true);
-      try {
-        await api.get("/");
-      } catch (error) {
-        console.log("API check finished");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    checkServices();
-  }, []);
-
-  const handleGetStarted = () => {
-    toast.success("Redirectig...");
-    window.location.href = "/signup";
+const Button = ({ children, variant = 'primary', className = '', ...props }) => {
+  const base = "inline-flex items-center justify-center h-12 px-6 rounded-lg font-bold transition-all duration-200 active:scale-95";
+  const variants = {
+    primary: "bg-main text-background hover:opacity-90",
+    outline: "border border-line text-main hover:bg-secondary",
+    ghost: "text-muted hover:text-main"
   };
 
-  const features: Feature[] = [
-    {
-      icon: Zap,
-      title: "Instant Activation",
-      desc: "Get your virtual number up and running within minutes.",
-    },
-    {
-      icon: Globe,
-      title: "Universal Compatibility",
-      desc: "Works seamlessly with WhatsApp, Google Voice, Telegram, and more.",
-    },
-    {
-      icon: Shield,
-      title: "Secure & Private",
-      desc: "Your privacy is our priority. No personal data required.",
-    },
-    {
-      icon: CreditCard,
-      title: "Affordable Plans",
-      desc: "Flexible pricing that fits your needs and budget.",
-    },
-  ];
+  return (
+    <button className={`${base} ${variants[variant]} ${className}`} {...props}>
+      {children}
+    </button>
+  );
+};
 
-  const steps: Step[] = [
-    {
-      icon: Smartphone,
-      title: "1. Create Account",
-      desc: "Sign up and verify your account in seconds.",
-    },
-    {
-      icon: CreditCard,
-      title: "2. Top Up Balance",
-      desc: "Add funds to your account securely.",
-    },
-    {
-      icon: Phone,
-      title: "3. Choose Number",
-      desc: "Select your preferred country and service.",
-    },
-    {
-      icon: MessageCircle,
-      title: "4. Receive OTP",
-      desc: "Get verification codes directly in your dashboard.",
-    },
-  ];
+const Card = ({ icon: Icon, title, desc }) => (
+  <div className="p-6 rounded-2xl border border-line bg-background hover:border-main/50 transition-colors">
+    <div className="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center mb-4 text-main">
+      <Icon size={24} />
+    </div>
+    <h3 className="text-lg font-bold mb-2 text-main">{title}</h3>
+    <p className="text-muted text-sm leading-relaxed">{desc}</p>
+  </div>
+);
 
-  const faqs: FAQ[] = [
-    {
-      question: "How to get started with SwiftPlug?",
-      answer: "Simply sign up, top up your account, and choose your virtual number. It takes less than 5 minutes!"
-    },
-    {
-      question: "Which platforms are supported?",
-      answer: "We support all major platforms including WhatsApp, Google Voice, Telegram, Facebook, Instagram, and many more."
-    },
-    {
-      question: "How do I receive verification codes?",
-      answer: "Once you purchase a number, all incoming SMS and verification codes appear instantly in your dashboard."
-    },
-    {
-      question: "Are the numbers reusable?",
-      answer: "Yes! You can use your virtual number for multiple verifications during the rental period."
-    }
-  ];
+const Badge = ({ children }) => (
+  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-line bg-secondary/50 text-xs font-medium text-main mb-6">
+    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+    {children}
+  </span>
+);
+
+/* --- Sections --- */
+
+const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Pattern>
-      <div className="relative z-10 min-h-[100dvh] flex flex-col overflow-x-hidden font-sans text-main">
-        {/* Header */}
-        <header className="w-full p-6 md:p-8 flex justify-between items-center max-w-7xl mx-auto z-20">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-main text-background rounded-xl">
-              <Phone className="w-6 h-6 md:w-7 md:h-7" />
-            </div>
-            <span className="text-xl font-bold tracking-tight text-main">
-              SwiftPlug
-            </span>
+    <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-line">
+      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="flex items-center gap-2 font-bold text-xl text-main">
+          <div className="w-8 h-8 bg-main text-background rounded-lg flex items-center justify-center">
+            <Zap size={18} fill="currentColor" />
           </div>
-          <nav className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-muted hover:text-main transition-colors">Features</a>
-            <a href="#how-it-works" className="text-muted hover:text-main transition-colors">How it Works</a>
-            <a href="#pricing" className="text-muted hover:text-main transition-colors">Pricing</a>
-            <a href="#faq" className="text-muted hover:text-main transition-colors">FAQ</a>
-          </nav>
-          <div className="flex items-center gap-4">
-            <ButtonWithLoader
-              loading={false}
-              initialText="Get Started"
-              loadingText=""
-              onClick={handleGetStarted}
-              className="h-10 px-6 rounded-xl text-sm font-bold bg-main text-background hover:bg-main/90 transition-all"
-            />
-            <ModeToggle />
-          </div>
-        </header>
+          SwiftPlug
+        </div>
 
-        <main className="flex-1 flex flex-col items-center justify-center px-4 pb-12 md:pb-20 w-full max-w-7xl mx-auto relative">
-          <AnimatePresence>
-            {isLoading ? (
-              <div className="center gap-3 text-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                <div className="relative">
-                  <Loader size={28} className="animate-spin text-main" />
-                </div>
-              </div>
-            ) : (
-              <motion.div
-                initial={{ y: 40, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 40, opacity: 0 }}
-                transition={{ delay: 0.3 }}
-                className="space-y-20 text-center w-full"
-              >
-                {/* Hero Section */}
-                <div className="space-y-8 max-w-4xl mx-auto mt-8 md:mt-12">
-                  <motion.div
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.5, type: "spring" }}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-line bg-secondary/50 backdrop-blur-md text-sm font-medium text-muted"
-                  >
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                    </span>
-                    <span>
-                      <CountUp end={10000} separator="," duration={2.5} />+ numbers activated today
-                    </span>
-                  </motion.div>
+        {/* Desktop Nav */}
+        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted">
+          <a href="#features" className="hover:text-main transition-colors">Features</a>
+          <a href="#pricing" className="hover:text-main transition-colors">Pricing</a>
+          <a href="#faq" className="hover:text-main transition-colors">Support</a>
+        </div>
 
-                  <motion.h1
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.7 }}
-                    className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-main leading-[1.1]"
-                  >
-                    Get your virtual
-                    <span className="block text-main">
-                      number in minutes
-                    </span>
-                    <span className="text-2xl md:text-3xl block mt-4">🚀</span>
-                  </motion.h1>
+        <div className="hidden md:flex items-center gap-3">
+          <Button variant="ghost" className="h-10 px-4">Log in</Button>
+          <Button className="h-10 px-4">Get Started</Button>
+        </div>
 
-                  <motion.p
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.9 }}
-                    className="text-muted text-lg md:text-xl max-w-2xl mx-auto leading-relaxed"
-                  >
-                    Empower your online presence with reliable virtual numbers. 
-                    Seamlessly receive verification codes from top platforms like 
-                    WhatsApp, Google Voice, Telegram, and more.
-                  </motion.p>
-
-                  {/* CTA Button */}
-                  <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 1.1 }}
-                    className="flex justify-center pt-4"
-                  >
-                    <ButtonWithLoader
-                      loading={false}
-                      initialText="Get Started Now"
-                      loadingText=""
-                      onClick={handleGetStarted}
-                      className="h-14 px-8 rounded-2xl text-lg font-bold bg-main text-background hover:bg-main/90 transition-all shadow-xl hover:translate-y-[-2px] hover:shadow-2xl flex items-center gap-2"
-                    >
-                      Get Started Now <ArrowRight size={20} />
-                    </ButtonWithLoader>
-                  </motion.div>
-                </div>
-
-                {/* Features Grid */}
-                <motion.section
-                  id="features"
-                  initial={{ y: 40, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 1.3 }}
-                  className="pt-16 w-full max-w-6xl mx-auto"
-                >
-                  <p className="text-muted text-sm uppercase tracking-widest mb-4 font-bold">
-                    Why Choose SwiftPlug
-                  </p>
-                  <h2 className="text-3xl md:text-4xl font-bold text-main mb-12">
-                    What SwiftPlug has to offer
-                  </h2>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {features.map((feature, idx) => {
-                      const IconComponent = feature.icon;
-                      return (
-                        <div
-                          key={idx}
-                          className="flex flex-col items-center text-center p-6 rounded-2xl border border-line hover:border-main hover:bg-secondary/30 transition-all duration-300 group"
-                        >
-                          <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center mb-6 text-main group-hover:scale-110 transition-transform">
-                            <IconComponent size={32} strokeWidth={1.5} />
-                          </div>
-                          <h3 className="font-bold text-xl mb-3 text-main">{feature.title}</h3>
-                          <p className="text-muted text-sm leading-relaxed">{feature.desc}</p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </motion.section>
-
-                {/* How it Works */}
-                <motion.section
-                  id="how-it-works"
-                  initial={{ y: 40, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 1.5 }}
-                  className="pt-16 w-full max-w-6xl mx-auto"
-                >
-                  <p className="text-muted text-sm uppercase tracking-widest mb-4 font-bold">
-                    How it works
-                  </p>
-                  <h2 className="text-3xl md:text-4xl font-bold text-main mb-12">
-                    Follow these simple steps
-                  </h2>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {steps.map((step, idx) => {
-                      const IconComponent = step.icon;
-                      return (
-                        <div
-                          key={idx}
-                          className="flex flex-col items-center text-center p-6 rounded-2xl border border-transparent hover:border-line hover:bg-secondary/30 transition-all duration-300"
-                        >
-                          <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center mb-6 text-main">
-                            <IconComponent size={32} strokeWidth={1.5} />
-                          </div>
-                          <h3 className="font-bold text-xl mb-3 text-main">{step.title}</h3>
-                          <p className="text-muted text-sm leading-relaxed">{step.desc}</p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </motion.section>
-
-                {/* FAQ Section */}
-                <motion.section
-                  id="faq"
-                  initial={{ y: 40, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 1.7 }}
-                  className="pt-16 w-full max-w-4xl mx-auto"
-                >
-                  <p className="text-muted text-sm uppercase tracking-widest mb-4 font-bold">
-                    FAQ
-                  </p>
-                  <h2 className="text-3xl md:text-4xl font-bold text-main mb-12">
-                    Frequently asked questions
-                  </h2>
-                  
-                  <div className="space-y-4 text-left">
-                    {faqs.map((faq, idx) => (
-                      <div
-                        key={idx}
-                        className="p-6 rounded-2xl border border-line bg-secondary/30 hover:bg-secondary/50 transition-all duration-300"
-                      >
-                        <h3 className="font-bold text-lg mb-2 text-main flex items-center gap-3">
-                          <CheckCircle size={20} className="text-green-500" />
-                          {faq.question}
-                        </h3>
-                        <p className="text-muted leading-relaxed">{faq.answer}</p>
-                      </div>
-                    ))}
-                  </div>
-                </motion.section>
-
-                {/* Final CTA Section */}
-                <motion.section
-                  initial={{ y: 40, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 1.9 }}
-                  className="pt-16 w-full max-w-2xl mx-auto text-center"
-                >
-                  <div className="p-8 rounded-3xl bg-secondary border border-line">
-                    <h2 className="text-2xl md:text-3xl font-bold mb-4 text-main">
-                      Ready to get your virtual number?
-                    </h2>
-                    <p className="text-muted mb-6">
-                      Join thousands of users who trust SwiftPlug for their verification needs.
-                    </p>
-                    <ButtonWithLoader
-                      loading={false}
-                      initialText="Get Started Now"
-                      loadingText=""
-                      onClick={handleGetStarted}
-                      className="h-12 px-8 rounded-xl text-lg font-bold bg-main text-background hover:bg-main/90 transition-all shadow-lg hover:translate-y-[-2px] hover:shadow-xl"
-                    />
-                  </div>
-                </motion.section>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </main>
-
-        {/* Footer */}
-        <footer className="w-full border-t border-line py-8 mt-20">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="flex flex-col md:flex-row justify-between items-center">
-              <div className="flex items-center gap-3 mb-4 md:mb-0">
-                <div className="w-8 h-8 flex items-center justify-center bg-main text-background rounded-lg">
-                  <Phone className="w-4 h-4" />
-                </div>
-                <span className="text-lg font-bold text-main">SwiftPlug</span>
-              </div>
-              
-              <div className="flex flex-wrap justify-center gap-6 md:gap-8 text-sm">
-                <a href="#" className="text-muted hover:text-main transition-colors">Home</a>
-                <a href="#features" className="text-muted hover:text-main transition-colors">Features</a>
-                <a href="#how-it-works" className="text-muted hover:text-main transition-colors">How it Works</a>
-                <a href="#faq" className="text-muted hover:text-main transition-colors">FAQ</a>
-                <a href="#" className="text-muted hover:text-main transition-colors">Contact</a>
-              </div>
-              
-              <div className="mt-4 md:mt-0 text-sm text-muted">
-                © 2026 SwiftPlug. All rights reserved.
-              </div>
-            </div>
-          </div>
-        </footer>
+        {/* Mobile Menu Toggle */}
+        <button className="md:hidden text-main" onClick={() => setIsOpen(!isOpen)}>
+          {isOpen ? <X /> : <Menu />}
+        </button>
       </div>
-    </Pattern>
+
+      {/* Mobile Nav */}
+      {isOpen && (
+        <div className="md:hidden border-t border-line bg-background p-6 space-y-4">
+          <a href="#features" className="block text-lg font-medium text-main">Features</a>
+          <a href="#pricing" className="block text-lg font-medium text-main">Pricing</a>
+          <Button className="w-full">Get Started</Button>
+        </div>
+      )}
+    </nav>
+  );
+};
+
+const Hero = () => (
+  <section className="pt-32 pb-20 px-6">
+    <div className="max-w-4xl mx-auto text-center">
+      <Badge>v2.0 Now Live</Badge>
+      <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-main mb-6">
+        Virtual numbers for <br/>
+        <span className="text-muted">secure verification.</span>
+      </h1>
+      <p className="text-lg text-muted mb-10 max-w-2xl mx-auto leading-relaxed">
+        Receive SMS codes instantly from WhatsApp, Telegram, Google, and 50+ other services. No SIM card required.
+      </p>
+      
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <Button className="w-full sm:w-auto h-14 px-8 text-lg">
+          Start Verifying <ArrowRight className="ml-2 w-5 h-5" />
+        </Button>
+        <Button variant="outline" className="w-full sm:w-auto h-14 px-8 text-lg">
+          View Pricing
+        </Button>
+      </div>
+
+      {/* Simple Visual */}
+      <div className="mt-20 p-2 rounded-2xl bg-line/20 border border-line max-w-3xl mx-auto">
+        <div className="bg-background rounded-xl border border-line overflow-hidden shadow-sm">
+           <div className="flex items-center gap-2 px-4 py-3 border-b border-line bg-secondary/30">
+              <div className="flex gap-1.5">
+                <div className="w-3 h-3 rounded-full bg-red-400/80" />
+                <div className="w-3 h-3 rounded-full bg-yellow-400/80" />
+                <div className="w-3 h-3 rounded-full bg-green-400/80" />
+              </div>
+              <div className="text-xs text-muted font-mono ml-4">swiftplug-dashboard.exe</div>
+           </div>
+           <div className="p-8 sm:p-12 flex flex-col items-center justify-center text-center space-y-6">
+              <div className="w-16 h-16 rounded-2xl bg-green-100 dark:bg-green-900/30 text-green-600 flex items-center justify-center">
+                <MessageSquare size={32} />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-main">Verification Code Received</h3>
+                <p className="text-muted mt-1">Your WhatsApp code is <span className="text-main font-mono font-bold tracking-widest bg-secondary px-2 py-0.5 rounded">829-102</span></p>
+              </div>
+           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
+const Features = () => (
+  <section id="features" className="py-24 px-6 border-t border-line bg-secondary/20">
+    <div className="max-w-6xl mx-auto">
+      <div className="grid md:grid-cols-3 gap-6">
+        <Card 
+          icon={Zap}
+          title="Instant Delivery"
+          desc="Our automated system delivers SMS codes to your dashboard in under 10 seconds."
+        />
+        <Card 
+          icon={Globe}
+          title="Global Coverage"
+          desc="Access real non-VoIP numbers from the US, UK, Netherlands, and 40+ other countries."
+        />
+        <Card 
+          icon={ShieldCheck}
+          title="Private & Secure"
+          desc="We never ask for your ID. Create an account anonymously and pay with Crypto."
+        />
+      </div>
+    </div>
+  </section>
+);
+
+const Stats = () => (
+  <section className="py-20 px-6 border-y border-line">
+    <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      {[
+        { label: 'Active Users', val: '50k+' },
+        { label: 'Countries', val: '45+' },
+        { label: 'SMS Received', val: '2M+' },
+        { label: 'Uptime', val: '99.9%' },
+      ].map((stat, i) => (
+        <div key={i}>
+          <div className="text-3xl md:text-4xl font-bold text-main mb-1">{stat.val}</div>
+          <div className="text-sm text-muted font-medium uppercase tracking-wider">{stat.label}</div>
+        </div>
+      ))}
+    </div>
+  </section>
+);
+
+const Footer = () => (
+  <footer className="py-12 px-6 bg-background text-center">
+    <div className="flex items-center justify-center gap-2 font-bold text-xl text-main mb-6">
+      <Zap size={20} fill="currentColor" />
+      SwiftPlug
+    </div>
+    <div className="flex justify-center gap-6 text-sm text-muted mb-8">
+      <a href="#" className="hover:text-main">Terms</a>
+      <a href="#" className="hover:text-main">Privacy</a>
+      <a href="#" className="hover:text-main">Contact</a>
+    </div>
+    <p className="text-muted/60 text-sm">© 2026 SwiftPlug. All rights reserved.</p>
+  </footer>
+);
+
+export default function Home() {
+  return (
+    <div className="min-h-screen bg-background text-main font-sans antialiased selection:bg-main selection:text-background">
+      <Navbar />
+      <Hero />
+      <Features />
+      <Stats />
+      <Footer />
+    </div>
   );
 }
+
