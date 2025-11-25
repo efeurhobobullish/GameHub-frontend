@@ -5,29 +5,29 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* Light Mode Colors */
+  /* Light Mode: Clean White & Royal Blue */
   --background: #ffffff;
-  --secondary: #f4f4f5;  
+  --secondary: #eff6ff;  /* A very light blue (Blue-50) instead of grey */
   --foreground: #ffffff; 
-  --main: #09090b;       /* Text is Black */
-  --muted: #71717a;      
-  --primary: #18181b;    
-  --line: #e4e4e7;       /* Dots are Light Grey */
+  --main: #0f172a;       /* Deep Navy (Slate-900) instead of Black - softer on eyes */
+  --muted: #64748b;      /* Blue-Grey (Slate-500) */
+  --primary: #2563eb;    /* Vibrant Royal Blue (Blue-600) */
+  --line: #dbeafe;       /* Light Blue border (Blue-100) */
   --card: #ffffff;
-  --card-foreground: #09090b;
+  --card-foreground: #0f172a;
 }
 
 .dark {
-  /* Dark Mode Colors */
-  --background: #000000; /* Background is Black */
-  --foreground: #09090b; 
-  --main: #ffffff;       /* Text is White */
-  --secondary: #18181b;  
-  --muted: #a1a1aa;      
-  --line: #27272a;       /* Dots are Dark Grey */
-  --primary: #ffffff;    
-  --card: #09090b;
-  --card-foreground: #ffffff;
+  /* Dark Mode: Deep Navy/Slate */
+  --background: #020617; /* Deepest Navy (Slate-950) instead of #000000 */
+  --foreground: #0f172a; 
+  --main: #f8fafc;       /* Ice White (Slate-50) */
+  --secondary: #1e293b;  /* Dark Slate Blue (Slate-800) */
+  --muted: #94a3b8;      /* Lighter Slate (Slate-400) */
+  --line: #1e293b;       /* Dark Blue Border */
+  --primary: #3b82f6;    /* Bright Blue (Blue-500) for contrast */
+  --card: #0f172a;
+  --card-foreground: #f8fafc;
 }
 
 @theme inline {
@@ -64,7 +64,7 @@ body {
   @apply flex items-center justify-center;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - Updated to match Blue theme */
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
 }
@@ -75,15 +75,15 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--muted);
+  background: var(--line); /* Uses the border color */
   border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--main);
+  background: var(--primary); /* Blue on hover */
 }
 
 /* button css */
 .btn-primary {
-  @apply bg-main text-background font-medium hover:bg-main/90 active:scale-95 transition-all;
+  @apply bg-primary text-white font-medium hover:opacity-90 active:scale-95 transition-all shadow-md shadow-blue-500/20;
 }
