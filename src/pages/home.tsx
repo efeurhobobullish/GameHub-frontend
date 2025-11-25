@@ -11,8 +11,7 @@ import {
   MessageCircle,
   Smartphone,
   CreditCard,
-  ArrowRight,
-  LucideIcon
+  ArrowRight
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import api from "@/api/axios";
@@ -36,7 +35,7 @@ interface FAQ {
   answer: string;
 }
 
-export default function Home(): JSX.Element {
+export default function Home(): TSX.Element {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
