@@ -41,7 +41,7 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full z-[100] bg-gradient-to-b from-background via-background/70 to-transparent">
+    <header className="fixed top-0 left-0 w-full z-[100] bg-background/80 backdrop-blur-md border-b border-line">
       <nav className="layout flex items-center justify-between h-[70px] text-main">
 
         {/* Left Side: Navigation / Back Buttons */}
